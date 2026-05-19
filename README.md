@@ -1,43 +1,78 @@
 # Raritone E-Commerce Backend API 🚀
 
-A high-performance, secure, and production-ready RESTful API backend for the Raritone platform built using Node.js, Express.js, and MongoDB. This project follows a strict Model-View-Controller (MVC) architecture pattern and features isolated modular workflows for seamless team collaboration.
+A high-performance, secure, and production-ready RESTful API backend for the Raritone platform built using Node.js, Express.js, and MongoDB. This project follows a modular MVC architecture with separate feature modules for authentication, products, and user management.
 
 ---
 
-## 📁 Core Workspace Architecture
-
-The repository is structured around a clear separation of concerns, ensuring different system modules can integrate cleanly without file system overlaps:
+## 📁 Core Architecture
 
 Raritone-Backend/
-├── config/             # Database connection setup
-│   └── db.js
-├── middleware/         # Security gatekeepers & token verification
-│   └── authMiddleware.js
-├── models/             # Mongoose schemas & data blueprints
-│   └── User.js
-├── controllers/        # Functional core brains & logic execution
-│   └── authController.js
-├── routes/             # API endpoint URI path mappings
-│   └── authRoutes.js
-├── .env                # Private environmental configurations (Hidden/Ignored)
-├── .gitignore          # Version control security exclusion rules
-├── package.json        # Project dependency manifests
-└── server.js           # Grand central integration station
+├── config/
+├── controllers/
+├── models/
+├── routes/
+├── middleware/
+├── uploads/
+├── server.js
+├── .env
+└── package.json
 
 ---
 
 ## 🔐 Authentication Module
 
-Handles user security layers, credential verification, and stateless secure session allocation.
-
-- POST /api/auth/signup - Registers a new user
-- POST /api/auth/login - Issues JWT token
-- POST /api/auth/logout - Ends session
-- POST /api/auth/forgot-password - Sends reset email
-- POST /api/auth/reset-password/:token - Resets password
+- POST /api/auth/signup - Register user
+- POST /api/auth/login - Login & JWT token generation
+- POST /api/auth/logout - Logout user
+- POST /api/auth/forgot-password - Send reset email
+- POST /api/auth/reset-password/:token - Reset password
 
 ---
 
-## 📄 Documentation
-User Profile System Readme:
-- See attached PDF in repository files
+## 🛒 Product Management Module
+
+### Features:
+- Add Products
+- Update Products
+- Delete Products
+- View Products
+- Search Products
+- Filter by category & price
+- Pagination & Sorting
+
+### APIs:
+- POST /api/products
+- GET /api/products
+- GET /api/products/:id
+- PUT /api/products/:id
+- DELETE /api/products/:id
+- GET /api/products/search
+
+---
+
+## 📷 Image Upload
+
+- Multer-based upload system
+- Stored in `/uploads`
+- Supports JPG, PNG, JPEG
+- Access images via:
+  http://localhost:5000/uploads/<filename>
+
+---
+
+## 🧠 Tech Stack
+
+- Node.js
+- Express.js
+- MongoDB + Mongoose
+- JWT Authentication
+- bcryptjs
+- Multer
+
+---
+
+## ⚙️ Setup
+
+```bash
+npm install
+npm run dev

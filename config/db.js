@@ -1,12 +1,13 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const connectDB = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI);
-        console.log("Database connected successfully to Raritone Local instance");
+
+        console.log("Database connected successfully");
     } catch (error) {
-        console.error("Database Connection Failure: ", error.message);
-        process.exit(1); // Kill the server process if database fails
+        console.error("Database Connection Failure:", error.message);
+        process.exit(1);
     }
 };
 

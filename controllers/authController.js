@@ -34,7 +34,7 @@ exports.signup = async (req, res) => {
 
         res.status(201).json({ message: "User identity created successfully" });
     } catch (error) {
-        res.status(500).json({ message: "Signup process failed", error: error.message });
+        res.status(500).json({ message: "Signup process fail", error: error.message });
     }
 };
 

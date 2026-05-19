@@ -1,8 +1,4 @@
-Sure 👍 I’ll create a **clean, professional GitHub README.md** for your **Raritone Product Management Backend**.
 
-You can directly copy-paste this into your `README.md`.
-
----
 
 # 📦 Raritone Backend – Product Management System
 

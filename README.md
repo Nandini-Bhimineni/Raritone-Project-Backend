@@ -278,7 +278,7 @@ products
 
 ---
 
-## 📎 Author
+## 📎 Author for the Module
 
 Nandini Bhimineni 
 Meka Hrishi Teja Chowdary

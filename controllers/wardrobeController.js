@@ -17,7 +17,7 @@ const addClothingItem = async (req, res) => {
 
         const wardrobeItem = new Wardrobe({
 
-            userId: req.user.id,
+            userId: null,
 
             clothingName,
             category,
@@ -50,11 +50,7 @@ const getWardrobeItems = async (req, res) => {
 
     try {
 
-        const items = await Wardrobe.find({
-
-            userId: req.user.id
-
-        });
+        const items = await Wardrobe.find();
 
         res.json(items);
 

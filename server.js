@@ -18,6 +18,10 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/profile", require("./routes/profileRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
 
+/* NEW MODULES */
+app.use("/api/wardrobe", require("./routes/wardrobeRoutes"));
+app.use("/api/wishlist", require("./routes/wishlistRoutes"));
+
 app.get("/", (req, res) => {
   res.json({ message: "Raritone API Running 🚀" });
 });

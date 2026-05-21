@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
 
 // file filter (secure + flexible)
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = /jpg|jpeg|png/;
+  const allowedTypes = /jpg|jpeg|png|webp/;
 
   const extValid = allowedTypes.test(
     path.extname(file.originalname).toLowerCase()
@@ -25,7 +25,10 @@ const fileFilter = (req, file, cb) => {
   if (extValid && mimeValid) {
     cb(null, true);
   } else {
-    cb(new Error("Only JPG, JPEG, PNG images allowed"), false);
+    cb(
+      new Error("Only JPG, JPEG, PNG, WEBP images allowed"),
+      false
+    );
   }
 };
 
@@ -33,7 +36,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   limits: {
-    fileSize: 2 * 1024 * 1024, // 2MB limit
+    fileSize: 5 * 1024 * 1024, // 5MB limit
   },
   fileFilter,
 });

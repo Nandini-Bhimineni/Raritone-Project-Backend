@@ -22,6 +22,9 @@ app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/wardrobe", require("./routes/wardrobeRoutes"));
 app.use("/api/wishlist", require("./routes/wishlistRoutes"));
 
+/* IMAGE STORAGE MODULE */
+app.use("/api/images", require("./routes/imageRoutes"));
+
 app.get("/", (req, res) => {
   res.json({ message: "Raritone API Running 🚀" });
 });

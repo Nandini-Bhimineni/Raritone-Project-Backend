@@ -1,144 +1,99 @@
-const express = require("express");
+const express = require('express');
+
 const router = express.Router();
 
-const Profile = require("../models/Profile");
+const {
 
-const auth = require("../middleware/authMiddleware");
+    getProfile,
+    updateProfile,
+    updatePreferences,
 
-const upload = require("../middleware/uploadMiddleware");
+    uploadProfileImage,
+    uploadAvatarImage,
+    deleteProfileImage
+
+} = require('../controllers/profileController');
+
+const authMiddleware = require('../middleware/authMiddleware');
+
+const upload = require('../middleware/uploadMiddleware');
 
 
-// =========================
+
 // GET PROFILE
-// =========================
+router.get(
 
-router.get("/", auth, async (req, res) => {
-  try {
-    let profile = await Profile.findOne({
-      userId: req.user.id,
-    });
+    '/',
 
-    if (!profile) {
-      profile = new Profile({
-        userId: req.user.id,
-      });
+    authMiddleware,
 
-      await profile.save();
-    }
-
-    res.json({
-      success: true,
-      profile,
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: err.message,
-    });
-  }
-});
-
-
-// =========================
-// UPDATE PROFILE
-// =========================
-
-router.put("/update", auth, async (req, res) => {
-  try {
-    const updatedProfile = await Profile.findOneAndUpdate(
-      { userId: req.user.id },
-
-      {
-        $set: {
-          bio: req.body.bio,
-          personalDetails: req.body.personalDetails,
-          updatedAt: Date.now(),
-        },
-      },
-
-      { new: true, upsert: true }
-    );
-
-    res.json({
-      success: true,
-      message: "Profile updated successfully",
-      updatedProfile,
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: err.message,
-    });
-  }
-});
-
-
-// =========================
-// UPLOAD AVATAR
-// =========================
-
-router.post(
-  "/avatar",
-  auth,
-  upload.single("avatar"),
-  async (req, res) => {
-    try {
-      const avatarPath = `/uploads/${req.file.filename}`;
-
-      const profile = await Profile.findOneAndUpdate(
-        { userId: req.user.id },
-
-        {
-          avatar: avatarPath,
-          updatedAt: Date.now(),
-        },
-
-        { new: true, upsert: true }
-      );
-
-      res.json({
-        success: true,
-        message: "Avatar uploaded successfully",
-        profile,
-      });
-    } catch (err) {
-      res.status(500).json({
-        success: false,
-        message: err.message,
-      });
-    }
-  }
+    getProfile
 );
 
 
-// =========================
-// SAVE PREFERENCES
-// =========================
 
-router.put("/preferences", auth, async (req, res) => {
-  try {
-    const profile = await Profile.findOneAndUpdate(
-      { userId: req.user.id },
+// UPDATE PROFILE
+router.put(
 
-      {
-        preferences: req.body.preferences,
-        updatedAt: Date.now(),
-      },
+    '/update',
 
-      { new: true, upsert: true }
-    );
+    authMiddleware,
 
-    res.json({
-      success: true,
-      message: "Preferences updated",
-      profile,
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: err.message,
-    });
-  }
-});
+    updateProfile
+);
+
+
+
+// UPDATE PREFERENCES
+router.put(
+
+    '/preferences',
+
+    authMiddleware,
+
+    updatePreferences
+);
+
+
+
+// PROFILE IMAGE
+router.post(
+
+    '/images/profile',
+
+    authMiddleware,
+
+    upload.single('image'),
+
+    uploadProfileImage
+);
+
+
+
+// AVATAR IMAGE
+router.post(
+
+    '/images/avatar',
+
+    authMiddleware,
+
+    upload.single('image'),
+
+    uploadAvatarImage
+);
+
+
+
+// DELETE PROFILE IMAGE
+router.delete(
+
+    '/images/profile',
+
+    authMiddleware,
+
+    deleteProfileImage
+);
+
+
 
 module.exports = router;

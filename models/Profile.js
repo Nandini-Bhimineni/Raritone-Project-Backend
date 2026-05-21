@@ -1,48 +1,46 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const profileSchema = new mongoose.Schema(
-  {
+const profileSchema = new mongoose.Schema({
+
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-      unique: true,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
 
     avatar: {
-      type: String,
-      default: "",
+        type: String,
+        default: ''
     },
 
     bio: {
-      type: String,
-      default: "",
+        type: String,
+        default: ''
     },
 
     preferences: {
-      theme: {
-        type: String,
-        default: "light",
-      },
 
-      notifications: {
-        type: Boolean,
-        default: true,
-      },
-    },
+        theme: {
+            type: String,
+            default: 'light'
+        },
 
-    personalDetails: {
-      fullName: String,
-      phone: String,
-      location: String,
+        language: {
+            type: String,
+            default: 'English'
+        },
+
+        notifications: {
+            type: Boolean,
+            default: true
+        }
     },
 
     updatedAt: {
-      type: Date,
-      default: Date.now,
-    },
-  },
-  { timestamps: true }
-);
+        type: Date,
+        default: Date.now
+    }
 
-module.exports = mongoose.model("Profile", profileSchema);
+});
+
+module.exports = mongoose.model('Profile', profileSchema);

@@ -1,44 +1,58 @@
 const multer = require("multer");
-const path = require("path");
 
-// storage config
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
+const cloudinary = require("../config/cloudinary");
 
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
+const {
+  CloudinaryStorage,
+} = require("multer-storage-cloudinary");
+
+const storage = new CloudinaryStorage({
+  cloudinary,
+
+  params: async (req, file) => ({
+    folder: "raritone",
+
+    allowed_formats: [
+      "jpg",
+      "jpeg",
+      "png",
+      "webp",
+    ],
+
+    transformation: [
+      {
+        width: 1000,
+        height: 1000,
+        crop: "limit",
+      },
+
+      {
+        quality: "auto",
+      },
+    ],
+  }),
 });
 
-// file filter (secure + flexible)
-const fileFilter = (req, file, cb) => {
-  const allowedTypes = /jpg|jpeg|png|webp/;
-
-  const extValid = allowedTypes.test(
-    path.extname(file.originalname).toLowerCase()
-  );
-
-  const mimeValid = allowedTypes.test(file.mimetype);
-
-  if (extValid && mimeValid) {
-    cb(null, true);
-  } else {
-    cb(
-      new Error("Only JPG, JPEG, PNG, WEBP images allowed"),
-      false
-    );
-  }
-};
-
-// multer config
 const upload = multer({
   storage,
+
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
+    fileSize: 5 * 1024 * 1024,
   },
-  fileFilter,
+
+  fileFilter: (req, file, cb) => {
+    const allowed = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+    ];
+
+    if (allowed.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Invalid File Type"));
+    }
+  },
 });
 
 module.exports = upload;

@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
 
+<<<<<<< HEAD
     email: {
         type: String,
         required: true,
@@ -36,6 +37,27 @@ const userSchema = new mongoose.Schema({
 }, {
 
     timestamps: true
+=======
+  password: {
+    type: String,
+    required: true,
+  },
+
+  profileImage: {
+    type: String,
+    default: "",
+  },
+
+  avatarImage: {
+    type: String,
+    default: "",
+  },
+
+  bodyImage: {
+    type: String,
+    default: "",
+  },
+>>>>>>> 4df0be7 (Completed User Image Storage Module)
 });
 
 module.exports = mongoose.model('User', userSchema);

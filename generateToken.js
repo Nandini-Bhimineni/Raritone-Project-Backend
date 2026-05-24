@@ -1,9 +1,16 @@
 const jwt = require("jsonwebtoken");
 
-const token = jwt.sign(
-    { id: "123456" },
-    "raritoneSecretKey",
-    { expiresIn: "7d" }
-);
+const generateToken = (id) => {
 
-console.log(token);
+  return jwt.sign(
+    { id },
+
+    process.env.JWT_SECRET,
+
+    {
+      expiresIn: "7d",
+    }
+  );
+};
+
+module.exports = generateToken;

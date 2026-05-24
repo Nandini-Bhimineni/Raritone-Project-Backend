@@ -1,39 +1,27 @@
 const multer = require("multer");
+const path = require("path");
 
-const cloudinary = require("../config/cloudinary");
+const storage = multer.diskStorage({
 
-const {
-  CloudinaryStorage,
-} = require("multer-storage-cloudinary");
+  destination: function (req, file, cb) {
 
-const storage = new CloudinaryStorage({
-  cloudinary,
+    cb(null, "uploads/");
 
-  params: async (req, file) => ({
-    folder: "raritone",
+  },
 
-    allowed_formats: [
-      "jpg",
-      "jpeg",
-      "png",
-      "webp",
-    ],
+  filename: function (req, file, cb) {
 
-    transformation: [
-      {
-        width: 1000,
-        height: 1000,
-        crop: "limit",
-      },
+    cb(
+      null,
+      Date.now() + path.extname(file.originalname)
+    );
 
-      {
-        quality: "auto",
-      },
-    ],
-  }),
+  },
+
 });
 
 const upload = multer({
+
   storage,
 
   limits: {
@@ -41,6 +29,7 @@ const upload = multer({
   },
 
   fileFilter: (req, file, cb) => {
+
     const allowed = [
       "image/jpeg",
       "image/png",
@@ -48,11 +37,17 @@ const upload = multer({
     ];
 
     if (allowed.includes(file.mimetype)) {
+
       cb(null, true);
+
     } else {
+
       cb(new Error("Invalid File Type"));
+
     }
+
   },
+
 });
 
 module.exports = upload;

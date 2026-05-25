@@ -21,6 +21,7 @@ app.use("/api/products", require("./routes/productRoutes"));
 /* NEW MODULES */
 app.use("/api/wardrobe", require("./routes/wardrobeRoutes"));
 app.use("/api/wishlist", require("./routes/wishlistRoutes"));
+app.use("/api/tryOnRoutes", require("./routes/tryOnRoutes")); 
 
 /* IMAGE STORAGE MODULE */
 app.use("/api/images", require("./routes/imageRoutes"));

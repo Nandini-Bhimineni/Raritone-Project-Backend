@@ -1,47 +1,99 @@
 const express = require("express");
-
 const router = express.Router();
 
+// Controllers
+const productController = require("../controllers/productController");
+
+// Middleware
+const upload = require("../middlewares/uploadMiddleware");
+
 const {
-    addProduct,
-    getProducts,
-    getProductById,
-    updateProduct,
-    deleteProduct,
-    searchProducts
-} = require("../controllers/productController");
+  protect
+} = require("../middlewares/authMiddleware");
 
-const protect = require("../middleware/authMiddleware");
+const {
+  authorizeRoles
+} = require("../middlewares/roleMiddleware");
 
-const upload = require("../middleware/uploadMiddleware");
-
-
-// ADD PRODUCT
+/**
+ * CREATE PRODUCT
+ * ADMIN & SUPER_ADMIN ONLY
+ */
 router.post(
-    "/",
-    protect,
-    upload.array("images", 5),
-    addProduct
+  "/images/product",
+
+  protect,
+
+  authorizeRoles("ADMIN", "SUPER_ADMIN"),
+
+  upload.fields([
+    {
+      name: "main",
+      maxCount: 1
+    },
+    {
+      name: "thumbnails",
+      maxCount: 10
+    },
+    {
+      name: "banners",
+      maxCount: 5
+    }
+  ]),
+
+  productController.createProduct
 );
 
+/**
+ * UPDATE PRODUCT IMAGES
+ * ADMIN & SUPER_ADMIN ONLY
+ */
+router.put(
+  "/images/product/:id",
 
-// GET PRODUCTS
-router.get("/", getProducts);
+  protect,
 
+  authorizeRoles("ADMIN", "SUPER_ADMIN"),
 
-// SEARCH PRODUCTS
-router.get("/search", searchProducts);
+  upload.fields([
+    {
+      name: "main",
+      maxCount: 1
+    },
+    {
+      name: "thumbnails",
+      maxCount: 10
+    },
+    {
+      name: "banners",
+      maxCount: 5
+    }
+  ]),
 
+  productController.updateProductImages
+);
 
-// GET SINGLE PRODUCT
-router.get("/:id", getProductById);
+/**
+ * DELETE PRODUCT IMAGE
+ * ADMIN & SUPER_ADMIN ONLY
+ */
+router.delete(
+  "/images/product",
 
+  protect,
 
-// UPDATE PRODUCT
-router.put("/:id", protect, updateProduct);
+  authorizeRoles("ADMIN", "SUPER_ADMIN"),
 
+  productController.deleteProductImage
+);
 
-// DELETE PRODUCT
-router.delete("/:id", protect, deleteProduct);
+/**
+ * GET ALL PRODUCTS
+ * PUBLIC ROUTE
+ */
+router.get(
+  "/products",
+  productController.getAllProducts
+);
 
 module.exports = router;

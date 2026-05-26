@@ -1,24 +1,45 @@
 const express = require("express");
+
 const router = express.Router();
 
-const authController = require("../controllers/authController");
+const authController =
+  require("../controllers/authController");
 
-// ======================
-// AUTH ROUTES (Unified)
-// ======================
+const {
+  protect
+} = require("../middlewares/authMiddleware");
 
-// register / signup
-router.post("/signup", authController.signup);
-router.post("/register", authController.signup); // backward support
+const {
+  authorizeRoles
+} = require("../middlewares/roleMiddleware");
 
-// login
-router.post("/login", authController.login);
+// Register
+router.post(
+  "/register",
+  authController.register
+);
 
-// forgot / reset password
-router.post("/forgot-password", authController.forgotPassword);
-router.post("/reset-password/:token", authController.resetPassword);
+// Login
+router.post(
+  "/login",
+  authController.login
+);
 
-// logout
-router.post("/logout", authController.logout);
+// Admin Route
+router.get(
+  "/admin",
+
+  protect,
+
+  authorizeRoles("ADMIN", "SUPER_ADMIN"),
+
+  (req, res) => {
+
+    res.json({
+      success: true,
+      message: "Welcome Admin"
+    });
+  }
+);
 
 module.exports = router;

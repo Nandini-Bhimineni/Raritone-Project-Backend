@@ -1,37 +1,60 @@
-require("dotenv").config();
 const express = require("express");
-const cors = require("cors");
-const connectDB = require("./config/db");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const path = require("path");
 
+// Load ENV
+dotenv.config();
+
+// App
 const app = express();
 
-// DB
-connectDB();
-
 // Middleware
-app.use(cors());
 app.use(express.json());
-app.use("/uploads", express.static("uploads"));
+app.use(express.urlencoded({ extended: true }));
 
-// Routes
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/profile", require("./routes/profileRoutes"));
-app.use("/api/products", require("./routes/productRoutes"));
+// Security Middleware
+app.use(helmet());
 
-/* NEW MODULES */
-app.use("/api/wardrobe", require("./routes/wardrobeRoutes"));
-app.use("/api/wishlist", require("./routes/wishlistRoutes"));
-app.use("/api/tryOnRoutes", require("./routes/tryOnRoutes")); 
-
-/* IMAGE STORAGE MODULE */
-app.use("/api/images", require("./routes/imageRoutes"));
-
-app.get("/", (req, res) => {
-  res.json({ message: "Raritone API Running 🚀" });
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100
 });
 
+app.use(limiter);
+
+// Static Folder
+app.use(
+  "/uploads",
+  express.static(
+    path.join(__dirname, "uploads")
+  )
+);
+
+// Routes
+const authRoutes = require("./routes/authRoutes");
+const productRoutes = require("./routes/productRoutes");
+
+// Route Middleware
+app.use("/api/auth", authRoutes);
+app.use("/api", productRoutes);
+
+// MongoDB Connection
+mongoose.connect(process.env.MONGO_URI)
+.then(() => {
+  console.log("MongoDB Connected");
+})
+.catch((error) => {
+  console.log(error);
+});
+
+// Server
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on ${PORT}`);
+  console.log(
+    `Server running on port ${PORT}`
+  );
 });

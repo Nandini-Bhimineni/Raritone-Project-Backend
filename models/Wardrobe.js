@@ -1,56 +1,46 @@
 const mongoose = require('mongoose');
 
-const wardrobeSchema = new mongoose.Schema({
-
+const wardrobeSchema = new mongoose.Schema(
+  {
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: false,
+      index: true
     },
 
     clothingName: {
-        type: String,
-        required: true
+      type: String,
+      required: false
     },
 
     category: {
-        type: String,
-        required: true
+      type: String,
+      required: true
     },
 
     color: {
-        type: String,
-        required: true
+      type: String,
+      required: true
     },
 
     brand: {
-        type: String,
-        default: null
+      type: String,
+      default: ''
     },
 
     image: {
-        type: String,
-        default: null
-    },
-
-    imagePublicId: {
-        type: String,
-        default: null
-    },
-
-    size: {
-        type: String,
-        default: null
-    },
-
-    condition: {
-        type: String,
-        enum: ['new', 'like-new', 'good', 'fair'],
-        default: 'good'
+      type: String,
+      default: ''
     }
-
-}, {
+  },
+  {
     timestamps: true
-});
+  }
+);
+
+// Indexes
+wardrobeSchema.index({ category: 1 });
+wardrobeSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model('Wardrobe', wardrobeSchema);

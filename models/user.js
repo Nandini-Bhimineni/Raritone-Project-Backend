@@ -1,56 +1,45 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
-
+const userSchema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
 
     email: {
-        type: String,
-        required: true,
-        unique: true
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
     },
 
     password: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
 
     profileImage: {
-        type: String,
-        default: null
-    },
-
-    profileImagePublicId: {
-        type: String,
-        default: null
+      type: String,
+      default: '',
     },
 
     avatarImage: {
-        type: String,
-        default: null
+      type: String,
+      default: '',
     },
 
-    avatarImagePublicId: {
-        type: String,
-        default: null
+    bodyScanImage: {
+      type: String,
+      default: '',
     },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-    bodyImage: {
-        type: String,
-        default: null
-    },
-
-    bodyImagePublicId: {
-        type: String,
-        default: null
-    }
-
-}, {
-
-    timestamps: true
-});
+// Index for latest users sorting
+userSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model('User', userSchema);

@@ -1,37 +1,39 @@
 require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const connectDB = require("./config/db");
 
-const app = express();
+const connectDB =
+require("./config/db");
 
-// DB
+const Product =
+require("./models/product");
+
+const app =
+require("./app");
+
+
+// DATABASE
 connectDB();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use("/uploads", express.static("uploads"));
 
-// Routes
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/profile", require("./routes/profileRoutes"));
-app.use("/api/products", require("./routes/productRoutes"));
+// SYNC PRODUCT INDEXES
+Product.syncIndexes()
+  .then(() =>
+    console.log("Product indexes synced")
+  )
+  .catch((err) =>
+    console.log(err)
+  );
 
-/* NEW MODULES */
-app.use("/api/wardrobe", require("./routes/wardrobeRoutes"));
-app.use("/api/wishlist", require("./routes/wishlistRoutes"));
-app.use("/api/tryOnRoutes", require("./routes/tryOnRoutes")); 
 
-/* IMAGE STORAGE MODULE */
-app.use("/api/images", require("./routes/imageRoutes"));
+// PORT
+const PORT =
+process.env.PORT || 5000;
 
-app.get("/", (req, res) => {
-  res.json({ message: "Raritone API Running 🚀" });
-});
 
-const PORT = process.env.PORT || 5000;
-
+// SERVER
 app.listen(PORT, () => {
-  console.log(`Server running on ${PORT}`);
+
+  console.log(
+    `Server running on ${PORT}`
+  );
+
 });

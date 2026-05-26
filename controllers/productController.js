@@ -1,11 +1,11 @@
-const Product = require("../models/Product");
+const Product = require("../models/product");
 
 // ADD PRODUCT
 exports.addProduct = async (req, res) => {
   try {
     const { title, description, price, category, stock } = req.body;
 
-    // ✅ FIX: validation (YOUR ERROR FIX)
+    // Validation
     if (!title || !description || !price || !category) {
       return res.status(400).json({
         success: false,
@@ -13,7 +13,7 @@ exports.addProduct = async (req, res) => {
       });
     }
 
-    // ✅ FIX: safe image handling
+    // Safe image handling
     const images =
       req.files && req.files.length > 0
         ? req.files.map((file) => file.path)
@@ -44,13 +44,21 @@ exports.addProduct = async (req, res) => {
 // GET ALL PRODUCTS
 exports.getProducts = async (req, res) => {
   try {
-    const products = await Product.find();
+
+    console.time("products");
+
+    const products = await Product.find()
+      .select("title price category stock images createdAt updatedAt")
+      .lean();
+
+    console.timeEnd("products");
 
     res.status(200).json({
       success: true,
       count: products.length,
       products,
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -62,7 +70,9 @@ exports.getProducts = async (req, res) => {
 // GET SINGLE PRODUCT
 exports.getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+
+    const product = await Product.findById(req.params.id)
+      .lean();
 
     if (!product) {
       return res.status(404).json({
@@ -75,6 +85,7 @@ exports.getProductById = async (req, res) => {
       success: true,
       product,
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -86,6 +97,7 @@ exports.getProductById = async (req, res) => {
 // UPDATE PRODUCT
 exports.updateProduct = async (req, res) => {
   try {
+
     const updatedData = { ...req.body };
 
     if (req.files && req.files.length > 0) {
@@ -96,7 +108,7 @@ exports.updateProduct = async (req, res) => {
       req.params.id,
       updatedData,
       { new: true, runValidators: true }
-    );
+    ).lean();
 
     if (!product) {
       return res.status(404).json({
@@ -110,6 +122,7 @@ exports.updateProduct = async (req, res) => {
       message: "Product updated",
       product,
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -121,7 +134,10 @@ exports.updateProduct = async (req, res) => {
 // DELETE PRODUCT
 exports.deleteProduct = async (req, res) => {
   try {
-    const product = await Product.findByIdAndDelete(req.params.id);
+
+    const product = await Product.findByIdAndDelete(
+      req.params.id
+    ).lean();
 
     if (!product) {
       return res.status(404).json({
@@ -134,6 +150,7 @@ exports.deleteProduct = async (req, res) => {
       success: true,
       message: "Product deleted",
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -142,9 +159,10 @@ exports.deleteProduct = async (req, res) => {
   }
 };
 
-// SEARCH + FILTER (same logic clean)
+// SEARCH + FILTER PRODUCTS
 exports.searchProducts = async (req, res) => {
   try {
+
     const { keyword, category, minPrice, maxPrice } = req.query;
 
     let query = {};
@@ -162,22 +180,38 @@ exports.searchProducts = async (req, res) => {
     }
 
     if (minPrice || maxPrice) {
+
       query.price = {};
-      if (minPrice) query.price.$gte = Number(minPrice);
-      if (maxPrice) query.price.$lte = Number(maxPrice);
+
+      if (minPrice) {
+        query.price.$gte = Number(minPrice);
+      }
+
+      if (maxPrice) {
+        query.price.$lte = Number(maxPrice);
+      }
     }
 
-    const products = await Product.find(query);
+    console.time("searchProducts");
+
+    const products = await Product.find(query)
+      .select("title price category stock images createdAt updatedAt")
+      .lean();
+
+    console.timeEnd("searchProducts");
 
     res.status(200).json({
       success: true,
       count: products.length,
       products,
     });
+
   } catch (error) {
+
     res.status(500).json({
       success: false,
       message: error.message,
     });
+
   }
 };

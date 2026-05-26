@@ -37,6 +37,11 @@ const measurementSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
+
+// INDEX FOR LATEST MEASUREMENTS
+measurementSchema.index({ createdAt: -1 });
+
+
 module.exports = mongoose.model(
    "Measurement",
    measurementSchema

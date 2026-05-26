@@ -19,7 +19,32 @@ const {
 
 
 
-// GENERAL IMAGE ROUTES
+// ================= USER IMAGE STORAGE ROUTES =================
+
+router.post(
+  "/upload/profile",
+  protect,
+  upload.single("image"),
+  uploadProfileImage
+);
+
+router.post(
+  "/upload/avatar",
+  protect,
+  upload.single("image"),
+  uploadAvatarImage
+);
+
+router.post(
+  "/upload/body",
+  protect,
+  upload.single("image"),
+  uploadBodyImage
+);
+
+
+
+// ================= GENERAL IMAGE ROUTES =================
 
 router.post(
   "/upload",
@@ -51,31 +76,6 @@ router.delete(
   "/:id",
   protect,
   deleteImage
-);
-
-
-
-// USER IMAGE STORAGE ROUTES
-
-router.post(
-  "/upload/profile",
-  protect,
-  upload.single("image"),
-  uploadProfileImage
-);
-
-router.post(
-  "/upload/avatar",
-  protect,
-  upload.single("image"),
-  uploadAvatarImage
-);
-
-router.post(
-  "/upload/body",
-  protect,
-  upload.single("image"),
-  uploadBodyImage
 );
 
 module.exports = router;

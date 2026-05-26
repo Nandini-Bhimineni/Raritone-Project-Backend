@@ -3,19 +3,17 @@ const express = require("express");
 const router = express.Router();
 
 const authController =
-require("../controllers/authController");
+  require("../controllers/authController");
 
 const {
-  googleLogin
+  googleLogin,
 } = require(
   "../controllers/googleAuthController"
 );
 
-
 // ======================
 // AUTH ROUTES
 // ======================
-
 
 // SIGNUP / REGISTER
 router.post(
@@ -23,18 +21,17 @@ router.post(
   authController.signup
 );
 
-router.post(
-  "/register",
-  authController.signup
-);
-
-
 // LOGIN
 router.post(
   "/login",
   authController.login
 );
 
+// VIEW ACTIVE USERS
+router.get(
+  "/",
+  authController.allusers
+);
 
 // GOOGLE LOGIN
 router.post(
@@ -42,13 +39,11 @@ router.post(
   googleLogin
 );
 
-
 // FORGOT PASSWORD
 router.post(
   "/forgot-password",
   authController.forgotPassword
 );
-
 
 // RESET PASSWORD
 router.post(
@@ -56,12 +51,10 @@ router.post(
   authController.resetPassword
 );
 
-
 // LOGOUT
 router.post(
   "/logout",
   authController.logout
 );
-
 
 module.exports = router;

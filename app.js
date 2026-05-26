@@ -5,13 +5,12 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 
 const rateLimit =
-require("express-rate-limit");
+  require("express-rate-limit");
 
 const errorMiddleware =
-require("./middleware/errorMiddleware");
+  require("./middleware/errorMiddleware");
 
 const app = express();
-
 
 // ================= MIDDLEWARE =================
 
@@ -21,37 +20,30 @@ app.use(helmet());
 
 app.use(express.json());
 
-
-// RATE LIMITER
-const limiter = rateLimit({
-
-  windowMs:
-  15 * 60 * 1000,
-
-  max: 100,
-
-  message:
-  "Too many requests from this IP"
-
-});
-
-app.use(limiter);
-
-
 app.use(compression());
 
 app.use(morgan("dev"));
 
+// RATE LIMITER
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
 
-// STATIC UPLOADS
+  max: 100,
+
+  message:
+    "Too many requests from this IP",
+});
+
+app.use(limiter);
+
+// ================= STATIC UPLOADS =================
+
 app.use(
   "/uploads",
   express.static("uploads")
 );
 
-
 // ================= ROUTES =================
-
 
 // AUTH ROUTES
 app.use(
@@ -59,13 +51,11 @@ app.use(
   require("./routes/authRoutes")
 );
 
-
 // PROFILE ROUTES
 app.use(
   "/api/profile",
   require("./routes/profileRoutes")
 );
-
 
 // PRODUCT ROUTES
 app.use(
@@ -73,13 +63,11 @@ app.use(
   require("./routes/productRoutes")
 );
 
-
 // WARDROBE ROUTES
 app.use(
   "/api/wardrobe",
   require("./routes/wardrobeRoutes")
 );
-
 
 // WISHLIST ROUTES
 app.use(
@@ -87,13 +75,11 @@ app.use(
   require("./routes/wishlistRoutes")
 );
 
-
 // TRY-ON ROUTES
 app.use(
   "/api/tryOnRoutes",
   require("./routes/tryOnRoutes")
 );
-
 
 // MEASUREMENTS ROUTES
 app.use(
@@ -101,13 +87,11 @@ app.use(
   require("./routes/measurementRoutes")
 );
 
-
 // CART ROUTES
 app.use(
   "/api/cart",
   require("./routes/cartRoutes")
 );
-
 
 // ORDER ROUTES
 app.use(
@@ -115,49 +99,32 @@ app.use(
   require("./routes/orderRoutes")
 );
 
-
 // IMAGE ROUTES
 app.use(
   "/api/images",
   require("./routes/imageRoutes")
 );
 
-
 // ================= ROOT ROUTE =================
 
 app.get("/", (req, res) => {
-
   res.json({
-
     success: true,
-
-    message:
-    "Raritone API Running 🚀"
-
+    message: "Raritone API Running 🚀",
   });
-
 });
-
 
 // ================= 404 HANDLER =================
 
 app.use((req, res) => {
-
   res.status(404).json({
-
     success: false,
-
-    message:
-    "Route not found"
-
+    message: "Route not found",
   });
-
 });
-
 
 // ================= ERROR MIDDLEWARE =================
 
 app.use(errorMiddleware);
-
 
 module.exports = app;

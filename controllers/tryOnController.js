@@ -1,4 +1,5 @@
 const TryOn = require("../models/TryOn");
+const { uploadToCloudinary, deleteFromCloudinary } = require("../utils/cloudinaryUpload");
 
 exports.uploadTryOn = async (req, res) => {
 
@@ -13,17 +14,27 @@ exports.uploadTryOn = async (req, res) => {
 
     }
 
-    const originalImage = req.files[0].path;
+    // Upload original image
+    const originalResult = await uploadToCloudinary(req.files[0].buffer, {
+      folder: 'raritone/tryon',
+      resource_type: 'auto',
+    });
 
-    const generatedImage = req.files[1].path;
+    // Upload generated image
+    const generatedResult = await uploadToCloudinary(req.files[1].buffer, {
+      folder: 'raritone/tryon',
+      resource_type: 'auto',
+    });
 
     const tryOn = await TryOn.create({
 
       userId: req.user.id,
 
-      originalImage,
+      originalImage: originalResult.secure_url,
+      originalImagePublicId: originalResult.public_id,
 
-      generatedImage,
+      generatedImage: generatedResult.secure_url,
+      generatedImagePublicId: generatedResult.public_id,
 
     });
 
@@ -37,7 +48,7 @@ exports.uploadTryOn = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: error.message || "Failed to upload try-on images",
     });
 
   }
@@ -71,8 +82,6 @@ exports.getTryOnHistory = async (req, res) => {
 exports.deleteTryOn = async (req, res) => {
   try {
 
-    const TryOn = require("../models/TryOn");
-
     const tryOn = await TryOn.findById(req.params.id);
 
     if (!tryOn) {
@@ -80,6 +89,23 @@ exports.deleteTryOn = async (req, res) => {
         success: false,
         message: "Try-on not found"
       });
+    }
+
+    // Delete images from Cloudinary
+    if (tryOn.originalImagePublicId) {
+      try {
+        await deleteFromCloudinary(tryOn.originalImagePublicId);
+      } catch (error) {
+        console.warn("Failed to delete original image from Cloudinary:", error.message);
+      }
+    }
+
+    if (tryOn.generatedImagePublicId) {
+      try {
+        await deleteFromCloudinary(tryOn.generatedImagePublicId);
+      } catch (error) {
+        console.warn("Failed to delete generated image from Cloudinary:", error.message);
+      }
     }
 
     await tryOn.deleteOne();
@@ -92,7 +118,7 @@ exports.deleteTryOn = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message || "Failed to delete try-on"
     });
   }
 };

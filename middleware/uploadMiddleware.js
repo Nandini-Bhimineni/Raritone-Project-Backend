@@ -1,53 +1,30 @@
 const multer = require("multer");
-const path = require("path");
 
-const storage = multer.diskStorage({
+// Use memory storage to upload directly to Cloudinary
+const storage = multer.memoryStorage();
 
-  destination: function (req, file, cb) {
+const allowedMimeTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+];
 
-    cb(null, "uploads/");
-
-  },
-
-  filename: function (req, file, cb) {
-
-    cb(
-      null,
-      Date.now() + path.extname(file.originalname)
-    );
-
-  },
-
-});
+const fileFilter = (req, file, cb) => {
+    if (allowedMimeTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error(
+            "Invalid file type. Only JPG, PNG, and WEBP are allowed."
+        ));
+    }
+};
 
 const upload = multer({
-
-  storage,
-
-  limits: {
-    fileSize: 5 * 1024 * 1024,
-  },
-
-  fileFilter: (req, file, cb) => {
-
-    const allowed = [
-      "image/jpeg",
-      "image/png",
-      "image/webp",
-    ];
-
-    if (allowed.includes(file.mimetype)) {
-
-      cb(null, true);
-
-    } else {
-
-      cb(new Error("Invalid File Type"));
-
-    }
-
-  },
-
+    storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024, // 5MB
+    },
+    fileFilter,
 });
 
 module.exports = upload;

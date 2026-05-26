@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const imageSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+    ref: "User",
+    required: true,
   },
 
   imageUrl: {
@@ -13,7 +14,6 @@ const imageSchema = new mongoose.Schema({
 
   imageType: {
     type: String,
-
     enum: [
       "profile",
       "avatar",
@@ -21,16 +21,16 @@ const imageSchema = new mongoose.Schema({
       "tryon",
       "fashion",
     ],
+    required: true,
   },
 
   publicId: {
     type: String,
+    required: true,
   },
 
-  uploadedAt: {
-    type: Date,
-    default: Date.now,
-  },
+}, {
+  timestamps: true,
 });
 
 module.exports = mongoose.model(

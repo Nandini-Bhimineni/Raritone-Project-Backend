@@ -9,6 +9,15 @@ const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '2h' });
 };
 
+exports.allusers = async (req, res) =>{
+    try{
+        const users = await User.find();
+         res.status(200).json({ users });
+    }catch(err){
+         res.status(500).json({ message: "failed to getusers", error: error.message });
+    }
+}
+
 // ==========================================
 // 1. SIGNUP API (POST /api/auth/signup)
 // ==========================================

@@ -13,9 +13,17 @@ const tryOnSchema = new mongoose.Schema({
     required: true,
   },
 
+  originalImagePublicId: {
+    type: String,
+  },
+
   generatedImage: {
     type: String,
     required: true,
+  },
+
+  generatedImagePublicId: {
+    type: String,
   },
 
   imageType: {

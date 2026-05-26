@@ -5,12 +5,12 @@ const wardrobeSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: false
+        required: true
     },
 
     clothingName: {
         type: String,
-        required: false
+        required: true
     },
 
     category: {
@@ -25,19 +25,32 @@ const wardrobeSchema = new mongoose.Schema({
 
     brand: {
         type: String,
-        default: ''
+        default: null
     },
 
     image: {
         type: String,
-        default: ''
+        default: null
     },
 
-    createdAt: {
-        type: Date,
-        default: Date.now
+    imagePublicId: {
+        type: String,
+        default: null
+    },
+
+    size: {
+        type: String,
+        default: null
+    },
+
+    condition: {
+        type: String,
+        enum: ['new', 'like-new', 'good', 'fair'],
+        default: 'good'
     }
 
+}, {
+    timestamps: true
 });
 
 module.exports = mongoose.model('Wardrobe', wardrobeSchema);

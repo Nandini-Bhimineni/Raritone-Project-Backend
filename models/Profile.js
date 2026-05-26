@@ -5,12 +5,8 @@ const profileSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
-    },
-
-    avatar: {
-        type: String,
-        default: ''
+        required: true,
+        unique: true
     },
 
     bio: {
@@ -18,10 +14,20 @@ const profileSchema = new mongoose.Schema({
         default: ''
     },
 
-    preferences: {
+    phone: {
+        type: String,
+        default: null
+    },
 
+    location: {
+        type: String,
+        default: null
+    },
+
+    preferences: {
         theme: {
             type: String,
+            enum: ['light', 'dark'],
             default: 'light'
         },
 
@@ -34,13 +40,10 @@ const profileSchema = new mongoose.Schema({
             type: Boolean,
             default: true
         }
-    },
-
-    updatedAt: {
-        type: Date,
-        default: Date.now
     }
 
+}, {
+    timestamps: true
 });
 
 module.exports = mongoose.model('Profile', profileSchema);

@@ -1,4 +1,5 @@
 const Product = require("../models/Product");
+const { uploadToCloudinary, deleteFromCloudinary } = require("../utils/cloudinaryUpload");
 
 // ADD PRODUCT
 exports.addProduct = async (req, res) => {
@@ -13,11 +14,33 @@ exports.addProduct = async (req, res) => {
       });
     }
 
-    // ✅ FIX: safe image handling
-    const images =
-      req.files && req.files.length > 0
-        ? req.files.map((file) => file.path)
-        : [];
+    // ✅ FIX: Upload images to Cloudinary
+    const images = [];
+    const imagePublicIds = [];
+
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        try {
+          const result = await uploadToCloudinary(file.buffer, {
+            folder: 'raritone/products',
+            resource_type: 'auto',
+          });
+          images.push(result.secure_url);
+          imagePublicIds.push(result.public_id);
+        } catch (error) {
+          console.error("Failed to upload product image:", error.message);
+          // Clean up previously uploaded images if one fails
+          for (const publicId of imagePublicIds) {
+            try {
+              await deleteFromCloudinary(publicId);
+            } catch (deleteError) {
+              console.warn("Failed to cleanup image:", deleteError.message);
+            }
+          }
+          throw error;
+        }
+      }
+    }
 
     const product = await Product.create({
       title,
@@ -26,6 +49,7 @@ exports.addProduct = async (req, res) => {
       category,
       stock,
       images,
+      imagePublicIds,
     });
 
     res.status(201).json({
@@ -36,7 +60,7 @@ exports.addProduct = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: error.message || "Failed to add product",
     });
   }
 };
@@ -86,17 +110,7 @@ exports.getProductById = async (req, res) => {
 // UPDATE PRODUCT
 exports.updateProduct = async (req, res) => {
   try {
-    const updatedData = { ...req.body };
-
-    if (req.files && req.files.length > 0) {
-      updatedData.images = req.files.map((file) => file.path);
-    }
-
-    const product = await Product.findByIdAndUpdate(
-      req.params.id,
-      updatedData,
-      { new: true, runValidators: true }
-    );
+    const product = await Product.findById(req.params.id);
 
     if (!product) {
       return res.status(404).json({
@@ -105,15 +119,66 @@ exports.updateProduct = async (req, res) => {
       });
     }
 
+    const updatedData = { ...req.body };
+
+    // If new files are uploaded, replace the old ones
+    if (req.files && req.files.length > 0) {
+      // Delete old images from Cloudinary
+      if (product.imagePublicIds && product.imagePublicIds.length > 0) {
+        for (const publicId of product.imagePublicIds) {
+          try {
+            await deleteFromCloudinary(publicId);
+          } catch (error) {
+            console.warn("Failed to delete old product image:", error.message);
+          }
+        }
+      }
+
+      // Upload new images
+      const newImages = [];
+      const newPublicIds = [];
+
+      for (const file of req.files) {
+        try {
+          const result = await uploadToCloudinary(file.buffer, {
+            folder: 'raritone/products',
+            resource_type: 'auto',
+          });
+          newImages.push(result.secure_url);
+          newPublicIds.push(result.public_id);
+        } catch (error) {
+          console.error("Failed to upload product image:", error.message);
+          // Cleanup newly uploaded images if one fails
+          for (const publicId of newPublicIds) {
+            try {
+              await deleteFromCloudinary(publicId);
+            } catch (deleteError) {
+              console.warn("Failed to cleanup image:", deleteError.message);
+            }
+          }
+          throw error;
+        }
+      }
+
+      updatedData.images = newImages;
+      updatedData.imagePublicIds = newPublicIds;
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      updatedData,
+      { new: true, runValidators: true }
+    );
+
     res.status(200).json({
       success: true,
-      message: "Product updated",
-      product,
+      message: "Product updated successfully",
+      product: updatedProduct,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: error.message || "Failed to update product",
     });
   }
 };
@@ -121,7 +186,7 @@ exports.updateProduct = async (req, res) => {
 // DELETE PRODUCT
 exports.deleteProduct = async (req, res) => {
   try {
-    const product = await Product.findByIdAndDelete(req.params.id);
+    const product = await Product.findById(req.params.id);
 
     if (!product) {
       return res.status(404).json({
@@ -130,14 +195,27 @@ exports.deleteProduct = async (req, res) => {
       });
     }
 
+    // Delete images from Cloudinary
+    if (product.imagePublicIds && product.imagePublicIds.length > 0) {
+      for (const publicId of product.imagePublicIds) {
+        try {
+          await deleteFromCloudinary(publicId);
+        } catch (error) {
+          console.warn("Failed to delete product image from Cloudinary:", error.message);
+        }
+      }
+    }
+
+    await Product.findByIdAndDelete(req.params.id);
+
     res.status(200).json({
       success: true,
-      message: "Product deleted",
+      message: "Product deleted successfully",
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: error.message || "Failed to delete product",
     });
   }
 };

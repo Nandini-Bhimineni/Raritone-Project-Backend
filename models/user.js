@@ -20,17 +20,32 @@ const userSchema = new mongoose.Schema({
 
     profileImage: {
         type: String,
-        default: ''
+        default: null
+    },
+
+    profileImagePublicId: {
+        type: String,
+        default: null
     },
 
     avatarImage: {
         type: String,
-        default: ''
+        default: null
     },
 
-    bodyScanImage: {
+    avatarImagePublicId: {
         type: String,
-        default: ''
+        default: null
+    },
+
+    bodyImage: {
+        type: String,
+        default: null
+    },
+
+    bodyImagePublicId: {
+        type: String,
+        default: null
     }
 
 }, {

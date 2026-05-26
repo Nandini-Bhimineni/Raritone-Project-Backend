@@ -1,5 +1,6 @@
 const Image = require("../models/Image");
 const User = require("../models/User");
+const { uploadToCloudinary, deleteFromCloudinary } = require("../utils/cloudinaryUpload");
 
 
 // ================= UPLOAD GENERAL IMAGE =================
@@ -15,16 +16,17 @@ exports.uploadImage = async (req, res) => {
       });
     }
 
+    // Upload to Cloudinary
+    const result = await uploadToCloudinary(req.file.buffer, {
+      folder: 'raritone/images',
+      resource_type: 'auto',
+    });
+
     const image = await Image.create({
-
       userId: req.user.id,
-
-      imageUrl: req.file.path || req.file.filename,
-
-      publicId: req.file.filename,
-
+      imageUrl: result.secure_url,
+      publicId: result.public_id,
       imageType: req.body.imageType,
-
     });
 
     res.status(201).json({
@@ -34,11 +36,11 @@ exports.uploadImage = async (req, res) => {
 
   } catch (error) {
 
-    console.log(error);
+    console.error(error);
 
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: error.message || "Failed to upload image",
     });
 
   }
@@ -126,11 +128,23 @@ exports.updateImage = async (req, res) => {
     }
 
     if (req.file) {
+      // Delete old image from Cloudinary if it exists
+      if (image.publicId) {
+        try {
+          await deleteFromCloudinary(image.publicId);
+        } catch (error) {
+          console.warn("Failed to delete old image:", error.message);
+        }
+      }
 
-      image.imageUrl = req.file.path || req.file.filename;
+      // Upload new image to Cloudinary
+      const result = await uploadToCloudinary(req.file.buffer, {
+        folder: 'raritone/images',
+        resource_type: 'auto',
+      });
 
-      image.publicId = req.file.filename;
-
+      image.imageUrl = result.secure_url;
+      image.publicId = result.public_id;
     }
 
     if (req.body.imageType) {
@@ -150,7 +164,7 @@ exports.updateImage = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: error.message || "Failed to update image",
     });
 
   }
@@ -175,6 +189,15 @@ exports.deleteImage = async (req, res) => {
 
     }
 
+    // Delete from Cloudinary if publicId exists
+    if (image.publicId) {
+      try {
+        await deleteFromCloudinary(image.publicId);
+      } catch (error) {
+        console.warn("Failed to delete image from Cloudinary:", error.message);
+      }
+    }
+
     await image.deleteOne();
 
     res.status(200).json({
@@ -186,7 +209,7 @@ exports.deleteImage = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: error.message || "Failed to delete image",
     });
 
   }
@@ -199,7 +222,7 @@ exports.deleteImage = async (req, res) => {
 exports.uploadProfileImage = async (req, res) => {
 
   try {
-
+    console.log("entered upload profile image controller");
     if (!req.file) {
 
       return res.status(400).json({
@@ -209,10 +232,8 @@ exports.uploadProfileImage = async (req, res) => {
 
     }
 
-    console.log(req.user);
-
     const user = await User.findById(req.user.id);
-
+    console.log("found user:", user);
     if (!user) {
 
       return res.status(404).json({
@@ -222,7 +243,23 @@ exports.uploadProfileImage = async (req, res) => {
 
     }
 
-    user.profileImage = req.file.filename;
+    // Delete old profile image from Cloudinary if it exists
+    if (user.profileImagePublicId) {
+      try {
+        await deleteFromCloudinary(user.profileImagePublicId);
+      } catch (error) {
+        console.warn("Failed to delete old profile image:", error.message);
+      }
+    }
+
+    // Upload new profile image
+    const result = await uploadToCloudinary(req.file.buffer, {
+      folder: 'raritone/profile',
+      resource_type: 'auto',
+    });
+    console.log("uploaded to Cloudinary:", result);
+    user.profileImage = result.secure_url;
+    user.profileImagePublicId = result.public_id;
 
     await user.save();
 
@@ -234,11 +271,11 @@ exports.uploadProfileImage = async (req, res) => {
 
   } catch (error) {
 
-    console.log(error);
+    console.error(error);
 
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: error.message || "Failed to upload profile image",
     });
 
   }
@@ -261,19 +298,36 @@ exports.uploadAvatarImage = async (req, res) => {
 
     }
 
-    const user = await User.findByIdAndUpdate(
+    const user = await User.findById(req.user.id);
 
-      req.user.id,
+    if (!user) {
 
-      {
-        avatarImage: req.file.path || req.file.filename,
-      },
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
 
-      {
-        new: true,
+    }
+
+    // Delete old avatar image from Cloudinary if it exists
+    if (user.avatarImagePublicId) {
+      try {
+        await deleteFromCloudinary(user.avatarImagePublicId);
+      } catch (error) {
+        console.warn("Failed to delete old avatar image:", error.message);
       }
+    }
 
-    );
+    // Upload new avatar image
+    const result = await uploadToCloudinary(req.file.buffer, {
+      folder: 'raritone/avatar',
+      resource_type: 'auto',
+    });
+
+    user.avatarImage = result.secure_url;
+    user.avatarImagePublicId = result.public_id;
+
+    await user.save();
 
     res.status(200).json({
       success: true,
@@ -283,9 +337,11 @@ exports.uploadAvatarImage = async (req, res) => {
 
   } catch (error) {
 
+    console.error(error);
+
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: error.message || "Failed to upload avatar image",
     });
 
   }
@@ -308,19 +364,36 @@ exports.uploadBodyImage = async (req, res) => {
 
     }
 
-    const user = await User.findByIdAndUpdate(
+    const user = await User.findById(req.user.id);
 
-      req.user.id,
+    if (!user) {
 
-      {
-        bodyImage: req.file.path || req.file.filename,
-      },
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
 
-      {
-        new: true,
+    }
+
+    // Delete old body image from Cloudinary if it exists
+    if (user.bodyImagePublicId) {
+      try {
+        await deleteFromCloudinary(user.bodyImagePublicId);
+      } catch (error) {
+        console.warn("Failed to delete old body image:", error.message);
       }
+    }
 
-    );
+    // Upload new body image
+    const result = await uploadToCloudinary(req.file.buffer, {
+      folder: 'raritone/body',
+      resource_type: 'auto',
+    });
+
+    user.bodyImage = result.secure_url;
+    user.bodyImagePublicId = result.public_id;
+
+    await user.save();
 
     res.status(200).json({
       success: true,
@@ -330,9 +403,11 @@ exports.uploadBodyImage = async (req, res) => {
 
   } catch (error) {
 
+    console.error(error);
+
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: error.message || "Failed to upload body image",
     });
 
   }

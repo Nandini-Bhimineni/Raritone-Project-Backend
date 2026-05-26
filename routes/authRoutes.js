@@ -11,6 +11,9 @@ const authController = require("../controllers/authController");
 router.post("/signup", authController.signup);
 router.post("/register", authController.signup); // backward support
 
+//view active users
+router.get("/", authController.allusers);
+
 // login
 router.post("/login", authController.login);
 

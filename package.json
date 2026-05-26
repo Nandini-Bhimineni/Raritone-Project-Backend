@@ -1,12 +1,10 @@
 {
   "name": "raritone-auth",
   "version": "1.0.0",
-  "description": "",
+  "description": "A scalable and modular **Node.js + Express + MongoDB** backend system built for the Raritone platform.  \r It includes Authentication, Product Management, Wishlist Management, Wardrobe Management, and User Profile System with JWT security and image upload support.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -22,9 +20,19 @@
     "mongoose": "^9.6.2",
     "multer": "^2.1.1",
     "multer-storage-cloudinary": "^4.0.0",
-    "nodemailer": "^8.0.8"
+    "nodemailer": "^8.0.8",
+    "sharp": "^0.34.5",
+    "streamifier": "^0.1.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nandini-Bhimineni/Raritone-Project-Backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nandini-Bhimineni/Raritone-Project-Backend/issues"
+  },
+  "homepage": "https://github.com/Nandini-Bhimineni/Raritone-Project-Backend#readme"
 }

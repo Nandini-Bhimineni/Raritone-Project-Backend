@@ -1,24 +1,67 @@
 const express = require("express");
+
 const router = express.Router();
 
-const authController = require("../controllers/authController");
+const authController =
+require("../controllers/authController");
+
+const {
+  googleLogin
+} = require(
+  "../controllers/googleAuthController"
+);
+
 
 // ======================
-// AUTH ROUTES (Unified)
+// AUTH ROUTES
 // ======================
 
-// register / signup
-router.post("/signup", authController.signup);
-router.post("/register", authController.signup); // backward support
 
-// login
-router.post("/login", authController.login);
+// SIGNUP / REGISTER
+router.post(
+  "/signup",
+  authController.signup
+);
 
-// forgot / reset password
-router.post("/forgot-password", authController.forgotPassword);
-router.post("/reset-password/:token", authController.resetPassword);
+router.post(
+  "/register",
+  authController.signup
+);
 
-// logout
-router.post("/logout", authController.logout);
+
+// LOGIN
+router.post(
+  "/login",
+  authController.login
+);
+
+
+// GOOGLE LOGIN
+router.post(
+  "/google",
+  googleLogin
+);
+
+
+// FORGOT PASSWORD
+router.post(
+  "/forgot-password",
+  authController.forgotPassword
+);
+
+
+// RESET PASSWORD
+router.post(
+  "/reset-password/:token",
+  authController.resetPassword
+);
+
+
+// LOGOUT
+router.post(
+  "/logout",
+  authController.logout
+);
+
 
 module.exports = router;

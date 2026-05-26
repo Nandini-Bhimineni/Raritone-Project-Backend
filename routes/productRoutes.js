@@ -3,45 +3,126 @@ const express = require("express");
 const router = express.Router();
 
 const {
+
     addProduct,
+
     getProducts,
+
     getProductById,
+
     updateProduct,
+
     deleteProduct,
+
     searchProducts
-} = require("../controllers/productController");
 
-const protect = require("../middleware/authMiddleware");
+} = require(
+    "../controllers/productController"
+);
 
-const upload = require("../middleware/uploadMiddleware");
+const protect =
+require("../middleware/authMiddleware");
+
+const roleMiddleware =
+require("../middleware/roleMiddleware");
+
+const upload =
+require("../middleware/uploadMiddleware");
 
 
+// ==========================================
 // ADD PRODUCT
+// ADMIN / SUPER_ADMIN ONLY
+// ==========================================
+
 router.post(
+
     "/",
+
     protect,
+
+    roleMiddleware(
+        "ADMIN",
+        "SUPER_ADMIN"
+    ),
+
     upload.array("images", 5),
+
     addProduct
+
 );
 
 
-// GET PRODUCTS
-router.get("/", getProducts);
+// ==========================================
+// GET ALL PRODUCTS
+// ==========================================
+
+router.get(
+    "/",
+    getProducts
+);
 
 
+// ==========================================
 // SEARCH PRODUCTS
-router.get("/search", searchProducts);
+// ==========================================
+
+router.get(
+    "/search",
+    searchProducts
+);
 
 
+// ==========================================
 // GET SINGLE PRODUCT
-router.get("/:id", getProductById);
+// ==========================================
+
+router.get(
+    "/:id",
+    getProductById
+);
 
 
+// ==========================================
 // UPDATE PRODUCT
-router.put("/:id", protect, updateProduct);
+// ADMIN / SUPER_ADMIN ONLY
+// ==========================================
+
+router.put(
+
+    "/:id",
+
+    protect,
+
+    roleMiddleware(
+        "ADMIN",
+        "SUPER_ADMIN"
+    ),
+
+    updateProduct
+
+);
 
 
+// ==========================================
 // DELETE PRODUCT
-router.delete("/:id", protect, deleteProduct);
+// ADMIN / SUPER_ADMIN ONLY
+// ==========================================
+
+router.delete(
+
+    "/:id",
+
+    protect,
+
+    roleMiddleware(
+        "ADMIN",
+        "SUPER_ADMIN"
+    ),
+
+    deleteProduct
+
+);
+
 
 module.exports = router;

@@ -1,39 +1,88 @@
-const jwt = require("jsonwebtoken");
+const jwt =
+require("jsonwebtoken");
 
-module.exports = (req, res, next) => {
+const User =
+require("../models/User");
+
+
+const authMiddleware =
+async (req, res, next) => {
 
   try {
 
-    const authHeader = req.header("Authorization");
+    const authHeader =
+    req.header("Authorization");
 
+    // CHECK TOKEN
     if (!authHeader) {
 
       return res.status(401).json({
+
         success: false,
-        message: "No token, authorization denied",
+
+        message:
+        "No token, authorization denied"
+
       });
 
     }
 
-    const token = authHeader.startsWith("Bearer ")
+    // EXTRACT TOKEN
+    const token =
+    authHeader.startsWith("Bearer ")
+
       ? authHeader.split(" ")[1]
+
       : authHeader;
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // VERIFY TOKEN
+    const decoded =
+    jwt.verify(
 
-    console.log(decoded);
+      token,
 
-    req.user = decoded;
+      process.env.JWT_SECRET
+
+    );
+
+    // GET USER
+    const user =
+    await User.findById(
+      decoded.id
+    ).select("-password");
+
+    if (!user) {
+
+      return res.status(401).json({
+
+        success: false,
+
+        message:
+        "User not found"
+
+      });
+
+    }
+
+    req.user = user;
 
     next();
 
   } catch (error) {
 
     return res.status(401).json({
+
       success: false,
-      message: "Invalid or expired token",
+
+      message:
+      "Invalid or expired token"
+
     });
 
   }
 
 };
+
+
+module.exports =
+authMiddleware;

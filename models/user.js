@@ -1,45 +1,69 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
+
   {
+
     name: {
       type: String,
-      required: true,
+      required: true
     },
 
     email: {
       type: String,
       required: true,
       unique: true,
-      index: true,
+      index: true
     },
 
     password: {
       type: String,
-      required: true,
+      required: true
+    },
+
+    role: {
+
+      type: String,
+
+      enum: [
+        "USER",
+        "ADMIN",
+        "SUPER_ADMIN"
+      ],
+
+      default: "USER"
+
     },
 
     profileImage: {
       type: String,
-      default: '',
+      default: ""
     },
 
     avatarImage: {
       type: String,
-      default: '',
+      default: ""
     },
 
     bodyScanImage: {
       type: String,
-      default: '',
-    },
+      default: ""
+    }
+
   },
+
   {
-    timestamps: true,
+    timestamps: true
   }
+
 );
 
-// Index for latest users sorting
+
+// INDEX FOR LATEST USERS
 userSchema.index({ createdAt: -1 });
 
-module.exports = mongoose.model('User', userSchema);
+
+module.exports = mongoose.model(
+  "User",
+  userSchema
+);

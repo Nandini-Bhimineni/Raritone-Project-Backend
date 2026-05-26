@@ -1,41 +1,21 @@
-const router =
-require("express").Router();
+const router = require("express").Router();
 
-const authMiddleware =
-require("../middleware/authMiddleware");
+const { protect } = require("../middlewares/authMiddleware");
 
 const {
-
-   addToCart,
-   getCart,
-   removeFromCart
-
-} = require(
-   "../controllers/cartController"
-);
+  addToCart,
+  getCart,
+  removeFromCart
+} = require("../controllers/cartController");
 
 
-// ADD
-router.post(
-   "/",
-   authMiddleware,
-   addToCart
-);
+// ADD TO CART
+router.post("/", protect, addToCart);
 
+// GET CART
+router.get("/", protect, getCart);
 
-// GET
-router.get(
-   "/",
-   authMiddleware,
-   getCart
-);
-
-
-// REMOVE
-router.delete(
-   "/:productId",
-   authMiddleware,
-   removeFromCart
-);
+// REMOVE FROM CART
+router.delete("/:productId", protect, removeFromCart);
 
 module.exports = router;

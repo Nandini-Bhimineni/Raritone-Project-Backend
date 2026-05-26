@@ -1,59 +1,29 @@
-const router =
-require("express").Router();
+const router = require("express").Router();
 
-const authMiddleware =
-require("../middleware/authMiddleware");
+const { protect } = require("../middlewares/authMiddleware");
 
 const {
-
-    createOrder,
-    getOrders,
-    getSingleOrder,
-    updateOrderStatus,
-    deleteOrder
-
-} = require(
-   "../controllers/orderController"
-);
+  createOrder,
+  getOrders,
+  getSingleOrder,
+  updateOrderStatus,
+  deleteOrder
+} = require("../controllers/orderController");
 
 
 // CREATE ORDER
-router.post(
-   "/",
-   authMiddleware,
-   createOrder
-);
-
+router.post("/", protect, createOrder);
 
 // GET ALL ORDERS
-router.get(
-   "/",
-   authMiddleware,
-   getOrders
-);
-
+router.get("/", protect, getOrders);
 
 // GET SINGLE ORDER
-router.get(
-   "/:id",
-   authMiddleware,
-   getSingleOrder
-);
-
+router.get("/:id", protect, getSingleOrder);
 
 // UPDATE STATUS
-router.put(
-   "/:id",
-   authMiddleware,
-   updateOrderStatus
-);
-
+router.put("/:id", protect, updateOrderStatus);
 
 // DELETE ORDER
-router.delete(
-   "/:id",
-   authMiddleware,
-   deleteOrder
-);
+router.delete("/:id", protect, deleteOrder);
 
 module.exports = router;

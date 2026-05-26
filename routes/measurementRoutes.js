@@ -1,41 +1,21 @@
-const router =
-require("express").Router();
+const router = require("express").Router();
 
-const authMiddleware =
-require("../middleware/authMiddleware");
+const { protect } = require("../middlewares/authMiddleware");
 
 const {
-
-    saveMeasurement,
-    getMeasurement,
-    deleteMeasurement
-
-} = require(
-   "../controllers/measurementController"
-);
+  saveMeasurement,
+  getMeasurement,
+  deleteMeasurement
+} = require("../controllers/measurementController");
 
 
-// CREATE/UPDATE
-router.post(
-   "/",
-   authMiddleware,
-   saveMeasurement
-);
-
+// CREATE / UPDATE
+router.post("/", protect, saveMeasurement);
 
 // GET
-router.get(
-   "/",
-   authMiddleware,
-   getMeasurement
-);
-
+router.get("/", protect, getMeasurement);
 
 // DELETE
-router.delete(
-   "/",
-   authMiddleware,
-   deleteMeasurement
-);
+router.delete("/", protect, deleteMeasurement);
 
 module.exports = router;

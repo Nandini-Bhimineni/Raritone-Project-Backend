@@ -1,9 +1,11 @@
 const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({
+
     title: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
 
     description: {
@@ -21,11 +23,7 @@ const productSchema = new mongoose.Schema({
         required: true
     },
 
-    images: [
-        {
-            type: String
-        }
-    ],
+    images: [String],
 
     stock: {
         type: Number,
@@ -35,5 +33,8 @@ const productSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+productSchema.index({ category: 1 });
+productSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model("Product", productSchema);

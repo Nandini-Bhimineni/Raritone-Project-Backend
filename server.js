@@ -1,12 +1,20 @@
 require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
+
+const Product = require("./models/product");
 
 const app = express();
 
 // DB
 connectDB();
+
+// Sync Product Indexes
+Product.syncIndexes()
+  .then(() => console.log("Product indexes synced"))
+  .catch((err) => console.log(err));
 
 // Middleware
 app.use(cors());
@@ -21,7 +29,7 @@ app.use("/api/products", require("./routes/productRoutes"));
 /* NEW MODULES */
 app.use("/api/wardrobe", require("./routes/wardrobeRoutes"));
 app.use("/api/wishlist", require("./routes/wishlistRoutes"));
-app.use("/api/tryOnRoutes", require("./routes/tryOnRoutes")); 
+app.use("/api/tryOnRoutes", require("./routes/tryOnRoutes"));
 
 /* IMAGE STORAGE MODULE */
 app.use("/api/images", require("./routes/imageRoutes"));

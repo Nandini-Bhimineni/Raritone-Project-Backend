@@ -1,5 +1,7 @@
 const Product = require("../models/product");
 
+const sharp = require("sharp");
+
 const {
   uploadToCloudinary,
   deleteFromCloudinary,
@@ -28,12 +30,31 @@ exports.addProduct = async (req, res) => {
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
         try {
-          const result = await uploadToCloudinary(file.buffer, {
-            folder: "raritone/products",
-            resource_type: "auto",
-          });
 
-          images.push(result.secure_url);
+          // IMAGE COMPRESSION
+          const compressedBuffer =
+            await sharp(file.buffer)
+              .resize(800)
+              .jpeg({ quality: 80 })
+              .toBuffer();
+
+          const result = await uploadToCloudinary(
+            compressedBuffer,
+            {
+              folder: "raritone/products",
+              resource_type: "auto",
+            }
+          );
+
+          // OPTIMIZED IMAGE URL
+          const optimizedUrl =
+            result.secure_url.replace(
+              "/upload/",
+              "/upload/w_500,h_500,c_fill,f_auto,q_auto/"
+            );
+
+          images.push(optimizedUrl);
+
           imagePublicIds.push(result.public_id);
 
         } catch (error) {
@@ -196,12 +217,30 @@ exports.updateProduct = async (req, res) => {
       for (const file of req.files) {
         try {
 
-          const result = await uploadToCloudinary(file.buffer, {
-            folder: "raritone/products",
-            resource_type: "auto",
-          });
+          // IMAGE COMPRESSION
+          const compressedBuffer =
+            await sharp(file.buffer)
+              .resize(800)
+              .jpeg({ quality: 80 })
+              .toBuffer();
 
-          newImages.push(result.secure_url);
+          const result = await uploadToCloudinary(
+            compressedBuffer,
+            {
+              folder: "raritone/products",
+              resource_type: "auto",
+            }
+          );
+
+          // OPTIMIZED IMAGE URL
+          const optimizedUrl =
+            result.secure_url.replace(
+              "/upload/",
+              "/upload/w_500,h_500,c_fill,f_auto,q_auto/"
+            );
+
+          newImages.push(optimizedUrl);
+
           newPublicIds.push(result.public_id);
 
         } catch (error) {

@@ -11,6 +11,13 @@ const {
   "../controllers/googleAuthController"
 );
 
+const validate = require("../middleware/validate");
+
+const {
+  loginSchema,
+  signupSchema,
+} = require("../validators/authValidator");
+
 // ======================
 // AUTH ROUTES
 // ======================
@@ -18,12 +25,14 @@ const {
 // SIGNUP / REGISTER
 router.post(
   "/signup",
+  validate(signupSchema),
   authController.signup
 );
 
 // LOGIN
 router.post(
   "/login",
+  validate(loginSchema),
   authController.login
 );
 

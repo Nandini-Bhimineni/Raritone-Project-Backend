@@ -105,6 +105,14 @@ app.use(
   require("./routes/imageRoutes")
 );
 
+// IMAGE ROUTES
+app.use(
+  "/api/avatar",
+  require("./routes/avatarRoutes")
+);
+
+
+
 // ================= ROOT ROUTE =================
 
 app.get("/", (req, res) => {

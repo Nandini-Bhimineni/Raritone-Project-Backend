@@ -1,512 +1,468 @@
 # Raritone Backend API
 
-A scalable and modular **Node.js + Express + MongoDB** backend system built for the Raritone platform.  
-It includes Authentication, Product Management, Wishlist Management, Wardrobe Management, Profile System, Cart System, Order Management, Measurements, Google OAuth Authentication, RBAC Security, JWT-based Authorization, and Image Upload Support.
+A scalable, secure, and modular Node.js + Express + MongoDB backend powering the Raritone Virtual Fashion Platform.
+
+The backend supports Authentication, Product Management, User Profiles, Wishlist, Wardrobe, Cart, Orders, Measurements, Avatar Management, Product Mapping, Virtual Try-On, Media Processing, Cloudinary Integration, Realtime Communication, and AI-ready Architecture.
 
 ---
 
-# 📁 Module Ownership
-
-## 🔐 Authentication & Security Module
-
-Developed by:
-
-- Vagdevi Malineni
-- Bharath Kumar
-- Vishnu Vardhan Reddy
-
-Features Added:
-
-- JWT Authentication
-- Access Token + Refresh Token
-- RBAC (ADMIN / SUPER_ADMIN)
-- Google OAuth Backend Integration
-- Helmet Security
-- Rate Limiting
-- Protected APIs
-
----
-
-## 🛒 Product Module
-
-Developed by:
+# 👨‍💻 Project Contributors
 
 - Nandini Bhimineni
 - Meka Hrishi Teja Chowdary
-
----
-
-## ❤️ Wishlist Module
-
-Developed by:
-
-- Vishnu Vardhan Reddy
 - Bharath Kumar
-
----
-
-## 👕 Wardrobe Module
-
-Developed by:
-
-- Nainisha
-- Vagdevi
-
----
-
-## 👤 Profile Module
-
-Developed by:
-
+- Vishnu Vardhan Reddy
 - Vagdevi Malineni
 - Nainisha Bandari
 
 ---
 
-## 🛍️ Cart Module
+# 🚀 Core Features
 
-Developed by:
+✔ JWT Authentication
 
-- Nandini Bhimineni
+✔ Google OAuth Integration
 
----
+✔ Role Based Access Control (RBAC)
 
-## 📦 Order Module
+✔ Product Management
 
-Developed by:
+✔ Wishlist Management
 
-- Nandini Bhimineni
-- Meka Hrishi Teja Chowdary
+✔ Wardrobe Management
 
----
+✔ User Profiles
 
-## 📏 Measurement Module
+✔ Cart Management
 
-Developed by:
+✔ Order Management
 
-- Nandini Bhimineni
+✔ User Measurements
 
----
+✔ Virtual Try-On Module
 
-## 🧠 Try-On Module
+✔ Avatar Management Module
 
-Developed by:
+✔ Product Mapping Module
 
-- Meka Hrishi Teja Chowdary
-- Nandini Bhimineni
-- Vishnu Vardhan Reddy
+✔ Cloudinary Integration
 
----
+✔ Image Upload Support
 
-## ☁️ Upload, Cloud & Scalability Research
+✔ Validation Layer
 
-Developed by:
+✔ Error Handling Middleware
 
-- Nandini Bhimineni
+✔ Helmet Security
 
-Research Areas:
+✔ Rate Limiting
 
-- AWS S3
-- Redis
-- Docker
-- Load Balancing
-- Logging & Monitoring
-- Sharp Image Optimization
-- WebP Conversion
-- Compression Planning
+✔ MongoDB Relationships
 
----
+✔ Mongoose Populate
 
-## 🔗 Final Testing, Integration, Relationships & Database Structure
+✔ RESTful APIs
 
-Handled by:
+✔ AI-Ready Backend Architecture
 
-- Nandini Bhimineni
+✔ Realtime Architecture Planning
+
+✔ Scalability Research
 
 ---
 
-# 📁 Updated Project Structure
+# ⚙️ Technology Stack
+
+## Backend
+- Node.js
+- Express.js
+
+## Database
+- MongoDB
+- Mongoose
+
+## Authentication
+- JWT
+- Google OAuth
+
+## Storage
+- Cloudinary
+- Multer
+
+## Security
+- Helmet
+- Express Rate Limit
+- CORS
+
+## Realtime
+- Socket.IO
+
+## Media Processing
+- Sharp
+
+## Utilities
+- dotenv
+- Morgan
+
+---
+
+# 📁 Project Structure
 
 ```text
-Raritone-Backend/
+Raritone-Project-Backend/
 │
 ├── config/
-│   ├── db.js
-│   └── cloudinary.js
+│   ├── cloudinary.js
+│   └── db.js
 │
 ├── controllers/
 │   ├── authController.js
-│   ├── googleAuthController.js
-│   ├── productController.js
-│   ├── wishlistController.js
-│   ├── wardrobeController.js
-│   ├── profileController.js
+│   ├── avatarController.js
 │   ├── cartController.js
-│   ├── orderController.js
+│   ├── googleAuthController.js
+│   ├── imageController.js
 │   ├── measurementController.js
+│   ├── orderController.js
+│   ├── productController.js
+│   ├── profileController.js
 │   ├── tryOnController.js
-│   └── imageController.js
+│   ├── wardrobeController.js
+│   └── wishlistController.js
 │
 ├── middleware/
 │   ├── authMiddleware.js
+│   ├── errorMiddleware.js
 │   ├── roleMiddleware.js
 │   ├── uploadMiddleware.js
-│   └── errorMiddleware.js
+│   └── validate.js
 │
 ├── models/
-│   ├── User.js
-│   ├── Product.js
-│   ├── Wishlist.js
+│   ├── Avatar.js
+│   ├── cart.js
+│   ├── Image.js
+│   ├── measurement.js
+│   ├── order.js
+│   ├── product.js
+│   ├── ProductMapping.js
+│   ├── Profile.js
+│   ├── TryOn.js
+│   ├── user.js
 │   ├── Wardrobe.js
-│   ├── Cart.js
-│   ├── Order.js
-│   └── Measurement.js
+│   └── Wishlist.js
 │
 ├── routes/
 │   ├── authRoutes.js
-│   ├── productRoutes.js
-│   ├── wishlistRoutes.js
-│   ├── wardrobeRoutes.js
-│   ├── profileRoutes.js
+│   ├── avatarRoutes.js
 │   ├── cartRoutes.js
-│   ├── orderRoutes.js
+│   ├── imageRoutes.js
 │   ├── measurementRoutes.js
+│   ├── orderRoutes.js
+│   ├── productRoutes.js
+│   ├── profileRoutes.js
 │   ├── tryOnRoutes.js
-│   └── imageRoutes.js
-│
-├── utils/
-│   └── generateToken.js
+│   ├── wardrobeRoutes.js
+│   └── wishlistRoutes.js
 │
 ├── uploads/
 │
-├── app.js
-├── server.js
+├── utils/
+│   ├── cloudinaryUpload.js
+│   └── generateToken.js
+│
+├── validators/
+│   ├── authValidator.js
+│   ├── avatarValidator.js
+│   ├── loginValidator.js
+│   ├── productValidator.js
+│   ├── registerValidator.js
+│   └── tryOnValidator.js
+│
 ├── .env
 ├── .gitignore
+├── app.js
 ├── package.json
-└── README.md
-
-
----
-
-⚙️ Tech Stack
-
-Node.js
-
-Express.js
-
-MongoDB + Mongoose
-
-JWT Authentication
-
-Google OAuth
-
-bcryptjs
-
-Multer
-
-Cloudinary
-
-dotenv
-
-Helmet
-
-express-rate-limit
-
-CORS
-
-Nodemailer
-
-
+├── package-lock.json
+├── README.md
+└── server.js
+```
 
 ---
 
-🔐 Authentication & Security Module
+# 🔐 Authentication Module
 
-Features
+## Features
 
-User Signup
+- User Registration
+- User Login
+- Logout
+- Forgot Password
+- Reset Password
+- Google OAuth Login
+- JWT Authentication
+- Refresh Tokens
+- Protected Routes
 
-User Login
-
-JWT Authentication
-
-Access Token + Refresh Token
-
-Forgot Password
-
-Reset Password
-
-Logout
-
-Google OAuth Login
-
-Role-Based Access Control
-
-Helmet Security
-
-Rate Limiting
-
-Protected APIs
-
-
-APIs
+## APIs
 
 POST /api/auth/signup
+
 POST /api/auth/login
+
 POST /api/auth/logout
+
 POST /api/auth/forgot-password
+
 POST /api/auth/reset-password/:token
+
 POST /api/auth/google
 
-
 ---
 
-🛒 Product Module
+# 🛒 Product Module
 
-Features
+## Features
 
-Add Products
+- Add Product
+- Update Product
+- Delete Product
+- Search Products
+- Filter Products
+- Product Image Upload
 
-Update Products
-
-Delete Products
-
-Search & Filter Products
-
-Product Image Upload
-
-Admin Route Protection
-
-
-APIs
+## APIs
 
 POST /api/products
+
 GET /api/products
+
 GET /api/products/:id
+
 PUT /api/products/:id
+
 DELETE /api/products/:id
-GET /api/products/search
-
 
 ---
 
-❤️ Wishlist Module
+# 👤 Profile Module
 
-Features
+## Features
 
-Add Product to Wishlist
+- View Profile
+- Update Profile
+- Upload Profile Image
+- Preferences Management
 
-Get Wishlist Products
-
-Remove Product from Wishlist
-
-Duplicate Wishlist Prevention
-
-Product Relationship Handling
-
-
-APIs
-
-POST /api/wishlist/add
-GET /api/wishlist
-DELETE /api/wishlist/remove/:productId
-
-
----
-
-👕 Wardrobe Module
-
-Features
-
-Add Clothing Item
-
-Get Wardrobe Items
-
-Delete Wardrobe Item
-
-User-Based Wardrobe Structure
-
-
-APIs
-
-POST /api/wardrobe/add
-GET /api/wardrobe
-DELETE /api/wardrobe/:id
-
-
----
-
-👤 Profile Module
-
-Features
-
-View Profile
-
-Update Profile
-
-Upload Avatar
-
-Manage Preferences
-
-
-APIs
+## APIs
 
 GET /api/profile
-PUT /api/profile/update
-POST /api/profile/avatar
-PUT /api/profile/preferences
 
+PUT /api/profile/update
+
+POST /api/profile/avatar
 
 ---
 
-🛍️ Cart Module
+# ❤️ Wishlist Module
 
-Features
+## Features
 
-Add to Cart
+- Add To Wishlist
+- Remove From Wishlist
+- View Wishlist
 
-Get User Cart
+## APIs
 
-Remove Cart Items
+POST /api/wishlist/add
 
-Protected Cart APIs
+GET /api/wishlist
 
+DELETE /api/wishlist/remove/:productId
 
-APIs
+---
+
+# 👕 Wardrobe Module
+
+## Features
+
+- Add Clothing Items
+- View Wardrobe
+- Remove Clothing Items
+
+## APIs
+
+POST /api/wardrobe/add
+
+GET /api/wardrobe
+
+DELETE /api/wardrobe/:id
+
+---
+
+# 🛍️ Cart Module
+
+## Features
+
+- Add To Cart
+- View Cart
+- Remove Items
+
+## APIs
 
 POST /api/cart
+
 GET /api/cart
+
 DELETE /api/cart/:productId
 
-
 ---
 
-📦 Order Module
+# 📦 Order Module
 
-Features
+## Features
 
-Create Order
+- Create Order
+- View Orders
+- Update Order Status
+- Delete Order
 
-Get Orders
-
-Update Order Status
-
-Delete Order
-
-Protected Order APIs
-
-
-APIs
+## APIs
 
 POST /api/orders
+
 GET /api/orders
+
 GET /api/orders/:id
+
 PUT /api/orders/:id
+
 DELETE /api/orders/:id
 
-
 ---
 
-📏 Measurement Module
+# 📏 Measurement Module
 
-Features
+## Features
 
-Save Measurements
+- Save Measurements
+- Retrieve Measurements
+- Delete Measurements
 
-Get Measurements
-
-Delete Measurements
-
-User-based Measurement Storage
-
-
-APIs
+## APIs
 
 POST /api/measurements
+
 GET /api/measurements
+
 DELETE /api/measurements
 
-
 ---
 
-🧠 Try-On Module
+# 🧠 Try-On Module
 
-Features
+## Features
 
-Virtual Try-On System
+- Virtual Try-On Requests
+- Outfit Preview Handling
+- User Image Processing
+- AI Integration Ready Structure
 
-Outfit Preview Handling
-
-User Image Processing
-
-AI-ready Try-On Structure
-
-
-APIs
+## APIs
 
 POST /api/tryOnRoutes
+
 GET /api/tryOnRoutes
 
+---
+
+# 👤 Avatar Module
+
+## Features
+
+- Store Avatar Information
+- User Avatar Management
+- AI Avatar Ready Structure
+- Avatar Status Tracking
+
+## Schema Fields
+
+- userId
+- avatarImage
+- bodyType
+- skinTone
+- gender
+- avatarModel
+- status
+
+## APIs
+
+POST /api/avatar
+
+GET /api/avatar
+
+GET /api/avatar/:id
+
+GET /api/avatar/user/:userId
+
+DELETE /api/avatar/:id
 
 ---
 
-📷 File Upload System
+# 🔗 Product Mapping Module
 
-Multer-based image upload system
+## Purpose
 
-Uploads stored in /uploads
+Maps products with user attributes, measurements, avatars, and recommendation workflows.
 
-Supports JPG, JPEG, PNG, WEBP
+## Benefits
 
-Cloudinary-ready upload structure
-
-
-Access uploaded images using:
-
-http://localhost:5000/uploads/<filename>
-
+- Recommendation Support
+- AI Personalization
+- Virtual Try-On Matching
+- Product Compatibility Analysis
 
 ---
 
-🔐 Authorization & RBAC
+# 📷 Media Processing Workflow
 
-Protected routes require:
-
-Authorization: Bearer <accessToken>
-
-RBAC Roles:
-
-USER
-
-ADMIN
-
-SUPER_ADMIN
-
-
-Admin-only APIs:
-
-Product Creation
-
-Product Update
-
-Product Delete
-
-
+```text
+User Uploads Image
+        ↓
+Multer Upload
+        ↓
+Sharp Compression
+        ↓
+WebP Optimization
+        ↓
+Cloudinary Upload
+        ↓
+CDN Delivery
+        ↓
+Response
+```
 
 ---
 
-🗄️ Database Relationships
+# ⚡ Realtime Architecture
 
-The project implements MongoDB relationships using ObjectId references.
+## Socket.IO Support
 
-Relationships Used
+Planned Events:
 
-User → Wardrobe
+- tryon-processing
+- tryon-completed
+- avatar-processing
+- avatar-completed
+- recommendation-updated
+
+---
+
+# 🗄️ Database Relationships
+
+User → Profile
 
 User → Wishlist
 
-Wishlist → Product
+User → Wardrobe
 
 User → Cart
 
@@ -514,186 +470,169 @@ User → Orders
 
 User → Measurements
 
+User → Avatars
 
-Mongoose Populate
+Wishlist → Product
 
-Used Mongoose populate() for referenced collection data retrieval.
+Cart → Product
 
-Example:
+Order → Product
 
-.populate("products")
+ProductMapping → Product
 
+MongoDB ObjectId references are used with Mongoose populate().
 
 ---
 
-⚙️ Setup Instructions
+# 🔐 Security Features
 
-Install dependencies
+- JWT Authentication
+- Refresh Tokens
+- Google OAuth
+- RBAC
+- Helmet Security
+- Rate Limiting
+- Input Validation
+- Error Middleware
+- Protected APIs
 
+---
+
+# 🏗️ Scalable Architecture
+
+```text
+Frontend / Mobile App
+          ↓
+      Backend API
+          ↓
+       Socket.IO
+          ↓
+      AI Services
+          ↓
+      Cloudinary
+          ↓
+     MongoDB Atlas
+          ↓
+       Response
+```
+
+---
+
+# 🚀 Future Roadmap
+
+## Phase 1
+
+- AI Avatar Generation
+- Recommendation Engine
+
+## Phase 2
+
+- Redis Caching
+- Queue Systems
+
+## Phase 3
+
+- Docker Deployment
+- Kubernetes Scaling
+
+## Phase 4
+
+- AWS Infrastructure
+- CDN Expansion
+
+## Phase 5
+
+- Full AI Virtual Try-On Engine
+
+---
+
+# ⚙️ Setup Instructions
+
+## Install Dependencies
+
+```bash
 npm install
+```
 
-Run server
+## Run Server
 
+```bash
 npm run dev
-
+```
 
 ---
 
-🌐 Environment Variables
+# 🌐 Environment Variables
 
-Create .env file:
-
+```env
 PORT=5000
+
 MONGO_URI=your_mongodb_connection
-JWT_SECRET=your_secret_key
+
+JWT_SECRET=your_secret
+
 JWT_REFRESH_SECRET=your_refresh_secret
-EMAIL_USER=your_email
-EMAIL_PASS=your_password
+
 GOOGLE_CLIENT_ID=your_google_client_id
+
 CLOUDINARY_CLOUD_NAME=your_cloud_name
+
 CLOUDINARY_API_KEY=your_api_key
+
 CLOUDINARY_API_SECRET=your_api_secret
-
+```
 
 ---
 
-🚀 Server Output
+# 🚀 Server Output
 
+```text
 MongoDB Connected
-Server running on port 5000
 
-
----
-
-📌 Features Summary
-
-✔ Authentication System
-
-✔ JWT Security
-
-✔ Access + Refresh Tokens
-
-✔ Google OAuth Backend Integration
-
-✔ RBAC Security
-
-✔ Product Management System
-
-✔ Wishlist Management System
-
-✔ Wardrobe Management System
-
-✔ Profile Management System
-
-✔ Cart Management System
-
-✔ Order Management System
-
-✔ Measurements Management System
-
-✔ Try-On Module
-
-✔ Image Upload Support
-
-✔ MongoDB Relationships
-
-✔ Mongoose Populate()
-
-✔ RESTful APIs
-
-✔ Modular Architecture
-
-✔ Team-based GitHub Collaboration
-
-✔ Helmet Security
-
-✔ Rate Limiting
-
-✔ Protected APIs
-
-
+Server Running
+```
 
 ---
 
-✅ Today's Work Completed
+# ✅ Final Status
 
-Merged Wishlist Module into final-main
+✔ Backend Integration Completed
 
-Merged Wardrobe Module into final-main
+✔ API Development Completed
 
-Completed Final Backend Integration
+✔ Security Layer Completed
 
-Implemented MongoDB Relationships
+✔ Database Relationships Completed
 
-Verified ObjectId References
+✔ Product Mapping Added
 
-Implemented Mongoose Populate()
+✔ Avatar Module Added
 
-Tested APIs using Postman
+✔ Media Processing Added
 
-Connected all routes in server.js
+✔ Cloudinary Integration Added
 
-Resolved merge conflicts
+✔ AI Integration Planning Completed
 
-Completed integration testing
+✔ Documentation Completed
 
-Implemented RBAC Security
+✔ Testing Completed
 
-Added Access & Refresh Token System
-
-Added Helmet Security Middleware
-
-Added Rate Limiting
-
-Protected Product APIs
-
-Implemented Google OAuth Backend Integration
-
-
+✔ Deployment Research Completed
 
 ---
 
-🔮 Future Improvements
-
-Email Verification
-
-Cloudinary Full Integration
-
-AWS S3 Storage
-
-Redis Caching
-
-Docker Deployment
-
-Swagger API Documentation
-
-Production Deployment (Render / AWS)
-
-AI Try-On Optimization
-
-Monitoring & Logging Systems
-
-
-
----
-
-🌿 Final Branch
+# 🌿 Final Branch
 
 final-main
 
-
 ---
 
-👨‍💻 Authors
+# 📌 Authors
 
-Nandini Bhimineni
-
-Bharath Kumar
-
-Vishnu Vardhan Reddy
-
-Meka Hrishi Teja Chowdary
-
-Vagdevi Malineni
-
-Nainisha Bandari
+- Nandini Bhimineni
+- Meka Hrishi Teja Chowdary
+- Bharath Kumar
+- Vishnu Vardhan Reddy
+- Vagdevi Malineni
+- Nainisha Bandari
